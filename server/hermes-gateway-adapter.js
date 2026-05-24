@@ -59,6 +59,7 @@ loadRuntimeEnv();
 const HERMES_API_URL = (process.env.HERMES_API_URL || "http://localhost:8642").replace(/\/$/, "");
 const HERMES_API_KEY = process.env.HERMES_API_KEY || "";
 const ADAPTER_PORT = parseInt(process.env.HERMES_ADAPTER_PORT || "18789", 10);
+const ADAPTER_HOST = process.env.HERMES_ADAPTER_HOST || "127.0.0.1";
 const HERMES_MODEL = process.env.HERMES_MODEL || "hermes";
 const HERMES_AGENT_NAME = process.env.HERMES_AGENT_NAME || "Hermes";
 const HOME = process.env.HOME || "/tmp";
@@ -1257,8 +1258,8 @@ function startAdapter() {
     });
   });
 
-  httpServer.listen(ADAPTER_PORT, "127.0.0.1", () => {
-    console.log(`\n[hermes-adapter] ✓ Listening on ws://localhost:${ADAPTER_PORT}`);
+  httpServer.listen(ADAPTER_PORT, ADAPTER_HOST, () => {
+    console.log(`\n[hermes-adapter] ✓ Listening on ws://${ADAPTER_HOST}:${ADAPTER_PORT}`);
     console.log(`[hermes-adapter] ✓ Forwarding to Hermes API at ${HERMES_API_URL}`);
     console.log(`[hermes-adapter] ✓ Model: ${HERMES_MODEL}`);
     console.log(`[hermes-adapter] ✓ Multi-agent orchestration: ENABLED`);
