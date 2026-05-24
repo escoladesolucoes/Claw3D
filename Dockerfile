@@ -29,6 +29,9 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/next.config.mjs ./next.config.mjs
 
+# Default mode = Studio (server/index.js). Set START_MODE=hermes-adapter or
+# START_MODE=demo-gateway to run an alternate entrypoint from server/start.js.
+
 EXPOSE 3000
 
-CMD ["node", "server/index.js"]
+CMD ["node", "server/start.js"]
