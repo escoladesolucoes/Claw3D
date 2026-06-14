@@ -1218,7 +1218,7 @@ function startAdapter() {
         send({
           type: "res", id, ok: true,
           payload: {
-            type: "hello-ok", protocol: 3,
+            type: "hello-ok", protocol: 4,
             adapterType: "hermes",
             features: { methods: ["agents.list","agents.create","agents.delete","agents.update",
               "sessions.list","sessions.preview","sessions.patch","sessions.reset",
