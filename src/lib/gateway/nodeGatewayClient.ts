@@ -120,7 +120,7 @@ const buildConnectParams = async (params: {
   });
   const signature = await signAsync(new TextEncoder().encode(payload), params.deviceIdentity.privateKey);
   return {
-  minProtocol: 4,
+  minProtocol: 3,
   maxProtocol: 4,
   client: {
     id: GATEWAY_CLIENT_ID,
