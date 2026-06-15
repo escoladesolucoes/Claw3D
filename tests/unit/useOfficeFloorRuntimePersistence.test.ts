@@ -219,4 +219,51 @@ describe("useOfficeFloorRuntimePersistence", () => {
     await act(() => vi.runAllTimersAsync());
     expect(updateSettings).not.toHaveBeenCalled();
   });
+
+  it("does NOT persist when the live adapter type mismatches the floor provider", async () => {
+    // Guard against the hermes↔openclaw inversion: a hermes connection must
+    // never be stamped onto the openclaw-ground floor.
+    const { coordinator, updateSettings } = makeCoordinator();
+
+    renderHook(() =>
+      useOfficeFloorRuntimePersistence({
+        activeFloorId: "openclaw-ground",
+        gatewayUrl: "ws://hermes:7770",
+        status: "connected",
+        gatewayError: null,
+        settingsCoordinator: coordinator,
+        activeAdapterType: "hermes",
+      }),
+    );
+
+    await act(() => vi.runAllTimersAsync());
+    expect(updateSettings).not.toHaveBeenCalled();
+  });
+
+  it("persists when the live adapter type matches the floor provider", async () => {
+    const { coordinator, updateSettings } = makeCoordinator();
+
+    renderHook(() =>
+      useOfficeFloorRuntimePersistence({
+        activeFloorId: "openclaw-ground",
+        gatewayUrl: "ws://openclaw:18789",
+        status: "connected",
+        gatewayError: null,
+        settingsCoordinator: coordinator,
+        activeAdapterType: "openclaw",
+      }),
+    );
+
+    await act(() => vi.runAllTimersAsync());
+    expect(updateSettings).toHaveBeenCalledWith(
+      expect.objectContaining({
+        officeFloors: expect.objectContaining({
+          "openclaw-ground": expect.objectContaining({
+            status: "connected",
+            gatewayUrl: "ws://openclaw:18789",
+          }),
+        }),
+      }),
+    );
+  });
 });

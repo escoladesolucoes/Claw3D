@@ -1350,6 +1350,7 @@ export function OfficeScreen({
     status,
     gatewayError,
     settingsCoordinator,
+    activeAdapterType,
   });
   const {
     error: remoteOfficeError,
@@ -1477,8 +1478,20 @@ export function OfficeScreen({
           localDefaults: localGatewayDefaults,
         });
         const floorRuntime = settings?.officeFloors?.[resolved];
-        nextGatewayUrl =
-          floorRuntime?.gatewayUrl?.trim() || profiles[adapterType]?.url?.trim() || nextGatewayUrl;
+        const savedUrl = floorRuntime?.gatewayUrl?.trim() || "";
+        const ownProfileUrl = profiles[adapterType]?.url?.trim() || "";
+        // Auto-heal the hermes↔openclaw inversion: if a previously-persisted URL
+        // actually belongs to a DIFFERENT adapter's profile (a cross-stamp), drop
+        // it and fall back to this floor's own adapter URL, so we never connect a
+        // floor to the wrong gateway / show the wrong roster.
+        const savedUrlIsCrossStamped =
+          savedUrl.length > 0 &&
+          Object.entries(profiles).some(
+            ([type, profile]) =>
+              type !== adapterType && (profile?.url?.trim() ?? "") === savedUrl,
+          );
+        const healedSavedUrl = savedUrl && !savedUrlIsCrossStamped ? savedUrl : "";
+        nextGatewayUrl = healedSavedUrl || ownProfileUrl || nextGatewayUrl;
         // Token is intentionally empty — the Studio proxy injects the server-side token.
         nextToken = "";
       } catch (error) {
