@@ -41,13 +41,13 @@ export const OFFICE_FLOORS: readonly FloorDefinition[] = [
     provider: "demo",
     kind: "lobby",
     zone: "building",
-    enabled: true,
+    enabled: false,
     sortOrder: 0,
     runtimeProfileId: null,
   },
   {
     id: "openclaw-ground",
-    label: "OpenClaw Floor",
+    label: "Setor OpenClaw",
     shortLabel: "OpenClaw",
     provider: "openclaw",
     kind: "runtime",
@@ -58,7 +58,7 @@ export const OFFICE_FLOORS: readonly FloorDefinition[] = [
   },
   {
     id: "hermes-first",
-    label: "Hermes Floor",
+    label: "Setor Hermes",
     shortLabel: "Hermes",
     provider: "hermes",
     kind: "runtime",
@@ -135,7 +135,7 @@ export const OFFICE_FLOORS: readonly FloorDefinition[] = [
   },
 ] as const;
 
-export const DEFAULT_ACTIVE_FLOOR_ID: FloorId = "lobby";
+export const DEFAULT_ACTIVE_FLOOR_ID: FloorId = "openclaw-ground";
 
 const FLOOR_BY_ID: Readonly<Record<FloorId, FloorDefinition>> = OFFICE_FLOORS.reduce(
   (acc, floor) => {
